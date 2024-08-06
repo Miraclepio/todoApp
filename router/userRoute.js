@@ -20,4 +20,4 @@ router.route("/forgotPassword/:token").put(validateEmail,forgotPassword)
 router.route("/resetPassword/:token").put(resetPassword) 
 router.route("/makeAdmin/").put(authenticator,checkAdmin,makeAdmin) 
 
-module.exports = router    
+module.exports = router     
