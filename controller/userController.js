@@ -7,12 +7,12 @@ const { generateWelcomeEmail } = require('../util/emailtemplates');
 
 exports.signUpUser = async (req, res) => {
     try {
-        const { fullName, email, password} = req.body;
+        const { fullName, email, password } = req.body;
       
-        const existingEmail = await UserModel.findOne({ email:email.toLowerCase() });
-        if (existingEmail) {
-            return res.status(400).json({ message: 'User with this email already exists' });
-        }
+        // const existingEmail = await UserModel.findOne({ email: email.toLowerCase() });
+        // if (existingEmail) {
+        //     return res.status(400).json({ message: 'User with this email already exists' });
+        // }
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
@@ -21,7 +21,7 @@ exports.signUpUser = async (req, res) => {
         // Create user
         const user = new UserModel({
             fullName,
-            email:email.toLowerCase(),
+            email: email.toLowerCase(),
             password: hashedPassword,
             isVerified: false // User is not verified initially
         });
@@ -34,7 +34,7 @@ exports.signUpUser = async (req, res) => {
         // Send verification email 
         const verificationLink = `https://todoapp-1-xkm1.onrender.com/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
-        const html = generateWelcomeEmail(createdUser.fullName,verificationLink);
+        const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
 
         const mailOptions = {
             from: process.env.user,
@@ -45,11 +45,12 @@ exports.signUpUser = async (req, res) => {
 
         await sendEmail(mailOptions);
 
-        return res.status(200).json({ message: "Successful, please check your email to verify your account",token ,user});
+        return res.status(200).json({ message: "Successful, please check your email to verify your account", token, user });
     } catch (error) {
          res.status(500).json(error.message); 
     }
 };
+
 
 
 // exports.verifyUser = async (req, res) => {
