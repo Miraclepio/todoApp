@@ -13,11 +13,11 @@ app.use(express.json());
 app.use(router);
 app.use(todoRouter);
 
-// Example route handler for a runtime error
-app.get("/error", (req, res, next) => {
-  const error = new Error("Something went wrong!");
-  next(error); // Pass the error to the error-handling middleware
-});
+// // Example route handler for a runtime error
+// app.get("/error", (req, res, next) => {
+//   const error = new Error("Something went wrong!");
+//   next(error); // Pass the error to the error-handling middleware
+// });
 
 // // Catch-all route handler for undefined routes
 // app.all("*", (req, res) => {
