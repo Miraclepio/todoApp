@@ -53,7 +53,7 @@ const changePassword = async (req, res) => {
         await user.save();
 
         // Generate change password email content
-        const resetLink=`https://thecurve-app.vercel.app/#/${token}`
+        const resetLink=`https://todoapp-1-xkm1.onrender.com${token}`
         const emailSubject = 'Change Password Request';
         const html = generateChangePasswordEmail(user.fullName,resetLink);
         const mailOptions = {
@@ -151,7 +151,7 @@ const forgotPassword = async (req, res) => {
         await user.save();
 
         // Send password reset email
-        const resetLink = `https://support.monday.com/hc/en-us/articles/115005324505-Help-I-forgot-my-password/${token}`;
+        const resetLink = `https://todoapp-1-xkm1.onrender.com/${token}`;
         const emailSubject = 'Password Reset';
         const html = generateForgotPasswordEmail(user.fullName,resetLink);
 
@@ -215,7 +215,7 @@ const resetPassword = async (req, res) => {
         await user.save();
 
         // Send password reset email
-        const resetLink = `https://www.pcmag.com/how-to/how-to-reset-a-forgotten-windows-10-password${token}`;
+        const resetLink = `https://todoapp-1-xkm1.onrender.com${token}`;
         const emailSubject = 'Password Reset';
         const html = generateForgotPasswordEmail(user.fullName, resetLink);
 

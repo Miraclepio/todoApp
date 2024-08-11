@@ -18,6 +18,6 @@ router.route("/user/:id").delete(authenticator,checkAdmin,validateObjectId,delet
 router.route("/changepassword/:token").put(authenticator,changePassword)
 router.route("/forgotPassword/:token").put(validateEmail,forgotPassword)
 router.route("/resetPassword/:token").put(resetPassword) 
-router.route("/makeAdmin/").put(authenticator,checkAdmin,makeAdmin) 
+router.route("/makeAdmin/").put(authenticator,checkAdmin,makeAdmin)  
 
 module.exports = router     

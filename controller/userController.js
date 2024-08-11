@@ -32,7 +32,7 @@ exports.signUpUser = async (req, res) => {
         const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3d" });
 
         // Send verification email 
-        const verificationLink = `${process.env.BASE_URL}/verify/${token}`;
+        const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
         const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
 
@@ -71,7 +71,7 @@ exports.verifyUser = async (req, res) => {
         if (exp < now) {
             console.log('Verification token has expired. Resending verification email.');
             const newToken = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "1d" });
-            const verificationLink = `${process.env.BASE_URL}/verify/${newToken}`;
+            const verificationLink = `${process.env.BASE_URL}/verifyUser/${newToken}`;
             const emailSubject = 'Resend Verification Mail';
             const html = generateWelcomeEmail(user.fullName, verificationLink);
 
