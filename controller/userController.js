@@ -29,10 +29,10 @@ exports.signUpUser = async (req, res) => {
         const createdUser = await user.save();
 
         // Generate verification token
-        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3d" });
+        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3sec" });
 
         // Send verification email 
-        const verificationLink = `https://todoapp-1-xkm1.onrender.com/verifyUser/${token}`;
+        const verificationLink = `https://todoapp-ci12.onrender.com/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
         const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
 
@@ -50,6 +50,52 @@ exports.signUpUser = async (req, res) => {
          res.status(500).json(error.message); 
     }
 };
+
+
+
+
+
+
+exports.resendVerification = async (req, res) => {
+    try {
+        const { email } = req.body;
+      
+        // Find the user by email
+        const user = await UserModel.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the user is already verified
+        if (user.isVerified) {
+            return res.status(400).json({ message: 'User already verified' });
+        }
+
+        // Generate a new verification token
+        const token = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "3d" });
+
+        // Send verification email
+        const verificationLink = `https://todoapp-1-xkm1.onrender.com/verifyUser/${token}`;
+        const emailSubject = 'Verification Mail';
+        const html = generateWelcomeEmail(user.fullName, verificationLink);
+
+        const mailOptions = {
+            from: process.env.user,
+            to: email,
+            subject: emailSubject,
+            html: html
+        };
+
+        await sendEmail(mailOptions);
+
+        return res.status(200).json({ message: "Verification email resent. Please check your email." });
+    } catch (error) {
+         res.status(500).json({ message: error.message }); 
+    }
+};
+
+
 
 
 
