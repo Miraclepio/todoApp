@@ -32,7 +32,7 @@ exports.signUpUser = async (req, res) => {
         const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3d" });
 
         // Send verification email 
-        const verificationLink = `"https://todoapp-1-xkm1.onrender.com/verifyUser/${token}"`;
+        const verificationLink = `https://todoapp-1-xkm1.onrender.com/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
         const html = generateWelcomeEmail(createdUser.fullName,verificationLink);
 
@@ -52,51 +52,82 @@ exports.signUpUser = async (req, res) => {
 };
 
 
+// exports.verifyUser = async (req, res) => {
+//     try {
+//         const { token } = req.params;
+//         const { email, exp } = jwt.verify(token, process.env.secret_key);
+
+//         const user = await UserModel.findOne({ email });
+//         if (!user) {
+//             console.log('User not found during verification.');
+//             return res.status(404).json({ message: "User not found" });
+//         }
+//         if (user.isVerified) {
+//             console.log('User already verified.');
+//             return res.status(400).json({ message: 'User already verified' });
+//         }
+
+//         const now = Math.floor(Date.now() / 1000);
+//         if (exp < now) {
+//             console.log('Verification token has expired. Resending verification email.');
+//             const newToken = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "1d" });
+//             const verificationLink = `process.env.BASE_URL/verifyUser/${newToken}`;
+//             const emailSubject = 'Resend Verification Mail';
+//             const html = generateWelcomeEmail(user.fullName, verificationLink);
+
+//             const mailOptions = {
+//                 from: process.env.user,
+//                 to: email,
+//                 subject: emailSubject,
+//                 html: html
+//             };
+
+//             await sendEmail(mailOptions);
+
+//             return res.status(400).json({ message: 'Verification token has expired. A new verification email has been sent.' });
+//         }
+
+//         user.isVerified = true;
+//         await user.save();
+
+//         console.log(`User ${email} verified successfully.`);
+//         return res.status(200).json({ message: 'User verified successfully' });
+//     } catch (error) {
+//         console.error('Error during verification:', error);
+//         res.status(500).json(error.message);
+//     }
+// };
+
 exports.verifyUser = async (req, res) => {
     try {
         const { token } = req.params;
-        const { email, exp } = jwt.verify(token, process.env.secret_key);
 
-        const user = await UserModel.findOne({ email });
+        // Verify and decode the token
+        const decoded = jwt.verify(token, process.env.secret_key);
+
+        // Find the user by the decoded userId
+        const user = await UserModel.findById(decoded.userId);
+
         if (!user) {
-            console.log('User not found during verification.');
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: 'User not found' });
         }
+
+        // Check if the user is already verified
         if (user.isVerified) {
-            console.log('User already verified.');
             return res.status(400).json({ message: 'User already verified' });
         }
 
-        const now = Math.floor(Date.now() / 1000);
-        if (exp < now) {
-            console.log('Verification token has expired. Resending verification email.');
-            const newToken = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "1d" });
-            const verificationLink = `process.env.BASE_URL/verifyUser/${newToken}`;
-            const emailSubject = 'Resend Verification Mail';
-            const html = generateWelcomeEmail(user.fullName, verificationLink);
-
-            const mailOptions = {
-                from: process.env.user,
-                to: email,
-                subject: emailSubject,
-                html: html
-            };
-
-            await sendEmail(mailOptions);
-
-            return res.status(400).json({ message: 'Verification token has expired. A new verification email has been sent.' });
-        }
-
+        // Mark the user as verified
         user.isVerified = true;
         await user.save();
 
-        console.log(`User ${email} verified successfully.`);
-        return res.status(200).json({ message: 'User verified successfully' });
+        res.status(200).json({ message: 'Account verified successfully' });
     } catch (error) {
-        console.error('Error during verification:', error);
-        res.status(500).json(error.message);
+        res.status(500).json({ message: 'Invalid or expired token' });
     }
 };
+
+
 
 
 // login function
