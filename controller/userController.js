@@ -34,7 +34,7 @@ exports.signUpUser = async (req, res) => {
         // Send verification email 
         const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
-        const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
+        const html = generateWelcomeEmail(createdUser.fullName,verificationLink);
 
         const mailOptions = {
             from: process.env.user,
