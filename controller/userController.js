@@ -32,7 +32,7 @@ exports.signUpUser = async (req, res) => {
         const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3d" });
 
         // Send verification email 
-        const verificationLink = `process.env.BASE_URL/verifyUser/${token}`;
+        const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
         const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
 
