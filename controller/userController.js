@@ -8,8 +8,8 @@ const { generateWelcomeEmail } = require('../util/emailtemplates');
 exports.signUpUser = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
-      
-        // Optional: Check if the email already exists
+
+        // Check if the email already exists
         // const existingEmail = await UserModel.findOne({ email: email.toLowerCase() });
         // if (existingEmail) {
         //     return res.status(400).json({ message: 'User with this email already exists' });
@@ -30,7 +30,7 @@ exports.signUpUser = async (req, res) => {
         const createdUser = await user.save();
 
         // Generate verification token
-        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3sec" });
+        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "1h" });
 
         // Send verification email 
         const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
@@ -42,13 +42,14 @@ exports.signUpUser = async (req, res) => {
             to: email,
             subject: emailSubject,  
             html: html
-        }; 
+        };
 
         await sendEmail(mailOptions);
 
         return res.status(200).json({ message: "Successful, please check your email to verify your account", token, user });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error during sign-up', error: error.message }); 
+        console.error('Error during sign-up:', error.message);
+        return res.status(500).json({ message: 'Internal server error during sign-up', error: error.message }); 
     }
 };
 
@@ -233,7 +234,6 @@ exports.signUpUser = async (req, res) => {
 //         res.status(500).json({ message: 'Invalid or expired token' });
 //     }
 // };
-
 
 exports.verifyUser = async (req, res) => {
     try {
