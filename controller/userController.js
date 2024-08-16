@@ -285,7 +285,7 @@ exports.verifyUser = async (req, res) => {
                     html: html
                 };
 
-                await sendEmail(mailOptions);
+                await sendEmail(mailOptions);   
             }
 
             return res.status(400).json({ message: 'Verification token has expired. A new verification email has been sent.' });
