@@ -30,7 +30,7 @@ exports.signUpUser = async (req, res) => {
         const createdUser = await user.save();
 
         // Generate verification token
-        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "1h" });
+        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3sec" });
 
         // Send verification email 
         const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
@@ -236,8 +236,9 @@ exports.signUpUser = async (req, res) => {
 // };
 
 exports.verifyUser = async (req, res) => {
+    const { token } = req.params;
     try {
-        const { token } = req.params;
+      
 
         // Verify the token
         const decoded = jwt.verify(token, process.env.secret_key);
