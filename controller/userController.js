@@ -33,7 +33,7 @@ exports.signUpUser = async (req, res) => {
         const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3sec" });
 
         // Send verification email 
-        const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
+        const verificationLink = `${process.env.BASE_URL}/verifyUsers/${token}`;
         const emailSubject = 'Verification Mail';
         const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
 
@@ -274,7 +274,7 @@ exports.verifyUser = async (req, res) => {
             console.log(user)
             if (user) {
                 const newToken = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "1d" });
-                const verificationLink = `${process.env.BASE_URL}/verifyUser/${newToken}`;
+                const verificationLink = `${process.env.BASE_URL}/verifyUsers/${newToken}`;
                 const emailSubject = 'Resend Verification Mail';
                 const html = generateWelcomeEmail(user.fullName, verificationLink);
 

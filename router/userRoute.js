@@ -9,7 +9,7 @@ const router = express.Router()
 
 
 router.route("/registerUser").post(validateSignUp,signUpUser)
-router.route("/verifyUser/:token").get(verifyUser)
+router.route("/verifyUsers/:token").get(verifyUser)
 // router.route("/resendVerification").post(resendVerification)
 router.route("/login").post(login)
 router.route("/user/:id").get(authenticator,validateObjectId,getOneUser)
