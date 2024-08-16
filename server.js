@@ -21,7 +21,7 @@ app.get("/error", (req, res, next) => {
 
 // Catch-all route handler for undefined routes
 app.all("*", (req, res) => {
-  res.status(404).json({ error: "Route not found" });
+  res.status(404).json({ error: "Route not found" }); 
 });
 
 
