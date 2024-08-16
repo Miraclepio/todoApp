@@ -102,7 +102,7 @@ exports.signUpUser = async (req, res) => {
 exports.verifyUser = async (req, res) => {
     try {
         const { token } = req.params;
-        const { email, exp } = jwt.verify(token, process.env.secret_key);
+        const { email, expiresIn } = jwt.verify(token, process.env.secret_key);
 
         const user = await UserModel.findOne({ email });
         if (!user) {
@@ -115,7 +115,9 @@ exports.verifyUser = async (req, res) => {
         }
 
         const now = Math.floor(Date.now() / 1000);
-        if (exp < now) {
+        console.log(now)
+        console.log(expiresIn)
+        if (expiresIn < now) {
             console.log('Verification token has expired. Resending verification email.');
             const newToken = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "1d" });
             const verificationLink = `process.env.BASE_URL/verifyUser/${newToken}`;
