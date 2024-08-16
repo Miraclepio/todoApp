@@ -10,10 +10,10 @@ exports.signUpUser = async (req, res) => {
         const { fullName, email, password } = req.body;
       
         // Optional: Check if the email already exists
-        const existingEmail = await UserModel.findOne({ email: email.toLowerCase() });
-        if (existingEmail) {
-            return res.status(400).json({ message: 'User with this email already exists' });
-        }
+        // const existingEmail = await UserModel.findOne({ email: email.toLowerCase() });
+        // if (existingEmail) {
+        //     return res.status(400).json({ message: 'User with this email already exists' });
+        // }
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
@@ -30,7 +30,7 @@ exports.signUpUser = async (req, res) => {
         const createdUser = await user.save();
 
         // Generate verification token
-        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "1h" });
+        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3sec" });
 
         // Send verification email 
         const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
