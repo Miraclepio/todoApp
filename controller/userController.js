@@ -266,11 +266,15 @@ exports.verifyUser = async (req, res) => {
         if (error.name === 'TokenExpiredError') {
             console.log('Verification token has expired. Resending verification email.');
 
+
+
             const decoded = jwt.decode(token); // Decode the token to get the email
             const user = await UserModel.findOne({ email: decoded.email });
+            console.log(decoded)
+            console.log(user)
             if (user) {
                 const newToken = jwt.sign({ email: user.email, userId: user._id }, process.env.secret_key, { expiresIn: "1d" });
-                const verificationLink = `${process.env.BASE_URL}/verifyUser/${newToken}`;
+                const verificationLink = `${process.env.BASE_URL}/verifyUser/${newTokentoken}`;
                 const emailSubject = 'Resend Verification Mail';
                 const html = generateWelcomeEmail(user.fullName, verificationLink);
 
