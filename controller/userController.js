@@ -30,9 +30,9 @@ exports.signUpUser = async (req, res) => {
         const createdUser = await user.save();
 
         // Generate verification token
-        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "3sec" });
+        const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.secret_key, { expiresIn: "1d" });
 
-        // Send verification email 
+        // Send verification email  
         const verificationLink = `${process.env.BASE_URL}/verifyUser/${token}`;
         const emailSubject = 'Verification Mail';
         const html = generateWelcomeEmail(createdUser.fullName, verificationLink);
@@ -40,9 +40,9 @@ exports.signUpUser = async (req, res) => {
         const mailOptions = {
             from: process.env.user,
             to: email,
-            subject: emailSubject,
+            subject: emailSubject,  
             html: html
-        };
+        }; 
 
         await sendEmail(mailOptions);
 
